@@ -1,0 +1,16 @@
+Initialize engine version: 4.5.0f6 (fd4616464986)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: AMD Radeon R9 200 Series (ID=0x6810)
+    Vendor:   ATI
+    VRAM:     2030 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Alex\Documents\GitHub\spectrum\builds\spectrum_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Alex\Documents\GitHub\spectrum\builds\spectrum_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Alex\Documents\GitHub\spectrum\builds\spectrum_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading C:\Users\Alex\Documents\GitHub\spectrum\builds\spectrum_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+- Completed reload, in  0.449 seconds
+desktop: 2560x1440 60Hz; virtual: 4480x1440 at -1920,0
+<RI> Initializing input.
+<RI> Input initialized.

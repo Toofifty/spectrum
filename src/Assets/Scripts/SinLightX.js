@@ -11,5 +11,6 @@ function Start () {
 
 function Update () {
 	transform.position.x = mainX + mult * Mathf.Sin( count );
+	// Sync with framerate
 	count += speed;
 }
