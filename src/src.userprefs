@@ -1,11 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NetworkManager.js">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\FadeObject.js">
     <Files>
-      <File FileName="Assets\Scripts\CameraControl.js" Line="11" Column="24" />
-      <File FileName="Assets\Scripts\PlayerTagControl.js" Line="5" Column="17" />
-      <File FileName="Assets\Scripts\NetworkManager.js" Line="53" Column="42" />
-      <File FileName="Assets\Scripts\PlayerControl.js" Line="17" Column="34" />
+      <File FileName="Assets\Scripts\NetworkManager.js" Line="36" Column="19" />
+      <File FileName="Assets\Scripts\CameraControl.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlayerTagControl.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlayerControl.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\SinLightX.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\FadeObject.js" Line="41" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

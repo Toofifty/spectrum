@@ -10,6 +10,7 @@ private var checkPointPosition = startPositions[0];
 var currentSubLevel = 0;
 var noZ = true;
 var tagPrefab : GameObject;
+var showUI = true;
 
 // NETWORKING
 private var lastSynchronizationTime : float = 0;
@@ -28,13 +29,7 @@ private var isFalling = false;
 
 function Start() {
 	if (networkView.isMine || !Network.isClient) {
-		//GameObject.Find("_Camera").GetComponent(CameraControl).target = transform;
-		Debug.Log("Connected to server, isMine");
-	} /*else {
-		Debug.Log("Connected to server, isMine is false");
-		Camera.main.active = false;
-		Camera.main.GetComponent(AudioListener).enabled = false;
-	}*/
+	}
 }
 
 // Function run each frame
@@ -98,6 +93,10 @@ function SyncedMovement() {
 function OnNetworkInstantiate(info : NetworkMessageInfo) {
 	if (networkView.isMine) {
 		Camera.main.GetComponent(CameraControl).target = transform;
+		for (var fadeObj : GameObject in GameObject.FindGameObjectsWithTag("Fade")) {
+			fadeObj.GetComponent(FadeObject).target = transform;
+		}
+		
 	}
 }
 
@@ -107,13 +106,15 @@ function ChangePlayerTag(pTag : String) {
 }
 
 function OnGUI() {
-	if (networkView.isMine) {
-		localName = GUI.TextField(Rect(0, 0, 100, 20), localName, 10);
-		networkView.RPC("ChangePlayerTag", RPCMode.OthersBuffered, localName);
+	if (showUI) {
+		if (networkView.isMine) {
+			localName = GUI.TextField(Rect(0, 0, 100, 20), localName, 10);
+			networkView.RPC("ChangePlayerTag", RPCMode.OthersBuffered, localName);
+		}
+		// Place the name plate where the gameObject (player prefab) is
+		namePlatePos = Camera.main.WorldToScreenPoint(gameObject.transform.position);  
+		GUI.Label(Rect((namePlatePos.x-50), (Screen.height - namePlatePos.y+10), 100, 50), localName, namePlate);  
 	}
-	// Place the name plate where the gameObject (player prefab) is
-	namePlatePos = Camera.main.WorldToScreenPoint(gameObject.transform.position);  
-	GUI.Label(Rect((namePlatePos.x-50), (Screen.height - namePlatePos.y+10), 100, 50), localName, namePlate);  
 }
 
 function DoMovement() {
@@ -155,7 +156,15 @@ function DoMovement() {
 		checkPointPosition = transform.position;
 	}
 	
-
+	if (Input.GetKeyDown(KeyCode.F1)) {
+		if (showUI) {
+			GameObject.Find("Server").GetComponent(NetworkManager).showUI = false;
+			showUI = false;
+		} else {
+			GameObject.Find("Server").GetComponent(NetworkManager).showUI = true;
+			showUI = true;
+		}
+	}
 	
 	if (transform.position.y <= fallDistance) {
 		if ( GetLevel() == 0 ) { IncLevel(); }
