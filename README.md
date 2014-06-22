@@ -21,3 +21,10 @@ Changelog
 
 * Tweaks to UI (F1 to hide)
 * Fixes in MP (removal of old players, kicking, closing server)
+
+#####v0.1.0a
+
+* Initial alpha [release](https://github.com/Toofifty/spectrum/releases)
+* Added simple multiplayer networking
+* Changed from torque- to velocity-based movement (+aerobatics)
+* No velocity can be gained in Z unless it is unlocked
