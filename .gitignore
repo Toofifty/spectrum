@@ -1,5 +1,13 @@
-##########
-# Spectrum
-##########
+############
+# Spectrum #
+############
 
 builds/
+*.exe
+*.pdb
+*.zip
+*.dll
+*.aspx
+*.mdb
+
+# Build the game yourself in Unity if you need an executable #
