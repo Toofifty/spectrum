@@ -13,6 +13,12 @@ Please report any bugs to the [Github Issue tracker](https://github.com/Toofifty
 Changelog
 ---------
 
+#####v0.1.3a
+
+* Created a glow shader to indicate power up
+* Changed jumping mechanics
+* Added powerup 'orbs' and animations
+
 #####v0.1.2a
 
 * Added the FadeObject script, fades objects (text) out when the player is out of a certain range.
