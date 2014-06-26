@@ -1,0 +1,7 @@
+Shader 1 is a Clip shader. You can adjust the amount of clip with a slider. The shader can also outline the edges of the clip area. You can control both the color and thickness of this outline!
+
+Shader 2 is a Surface Cover shader. It coats the top facing sides of your objects with a texture of your liking. You can control how far down the cover spreads, and how much the normal map of the base influences the coat. (So, for example, you can have snow or moss that builds up in cracks). The shader can also offset the vertices of the surface. You have control over how much to offset the surface (or if the surface should be offset at all). This shader has some restrictions. When using the Vertex Offset feature, the object containing the mesh should not be rotated, and it should not use Smoothing Groups (as this will cause a rip in the mesh). For this reason the vertex offset turned on works well on static/scenery objects, and when it is off it works well for "dynamic objects".
+
+Shader 3 is a Pulsating shader. This shader can be used to animate meshes in an organic fashion (Think Zerg Buildings in Starcraft 2). The shader reads the meshes Vertex Color. Black means "pulsate", white means "don't". You can paint the vertex colors of your mesh in your 3D Editor (its very easy!) and you have full control over what parts of the mesh will pulsate. In my example, I painted Veins onto the mesh and that was my result!
+
+Feel free to shoot me an email at timur.s.aksu@gmail.com (or twitter @timaksu) if you've got any questions!
