@@ -22,10 +22,6 @@ public class CheckpointHandler : MonoBehaviour {
 			Debug.Log ("New checkpoint: " + transform.position.ToString ());
 		}
 		
-		if (target == null) {
-			Debug.Log ("Checkpoint does not have a target!");
-		}
-		
 		Vector3 tp = transform.position;
 		transform.position = new Vector3 (tp.x, oldY + Mathf.Sin (count) / 20, tp.z);
 		count += hoverSpeed * Time.deltaTime * 60;

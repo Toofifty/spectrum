@@ -49,24 +49,21 @@
      <Compile Include="Assets\Scripts\CameraHandler.cs" />
      <Compile Include="Assets\Scripts\CheckpointHandler.cs" />
      <Compile Include="Assets\Scripts\FadeObject.cs" />
+     <Compile Include="Assets\Scripts\GUIButton.cs" />
+     <Compile Include="Assets\Scripts\GUICamera.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\HostInformation.cs" />
      <Compile Include="Assets\Scripts\LerpLight.cs" />
      <Compile Include="Assets\Scripts\NetworkManager.cs" />
      <Compile Include="Assets\Scripts\PlayerHandler.cs" />
      <Compile Include="Assets\Scripts\PowerupObject.cs" />
      <Compile Include="Assets\Scripts\SinLightMovement.cs" />
-     <None Include="Assets\SecondChanceShaderPack\Pulsate.shader" />
-     <None Include="Assets\SecondChanceShaderPack\_Readme.txt" />
-     <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
-     <None Include="Assets\SecondChanceShaderPack\SurfaceCoverShaderNoRim.shader" />
-     <None Include="Assets\SecondChanceShaderPack\ClipShader.shader" />
+     <Compile Include="Assets\Scripts\TextInput.cs" />
      <None Include="Assets\afr.shader" />
-     <None Include="Assets\SecondChanceShaderPack\SurfaceCoverShader.shader" />
      <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
      <None Include="Assets\Shaders\Berko_mat_metal_3.shader" />
      <None Include="Assets\Shaders\shader-test.shader" />
-     <None Include="Assets\SecondChanceShaderPack\ClipShaderNoRim.shader" />
      <None Include="Assets\Shaders\spectrum.cginc" />
-     <None Include="Assets\SecondChanceShaderPack\PulsateNoRim.shader" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">

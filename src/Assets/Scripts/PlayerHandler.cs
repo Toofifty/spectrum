@@ -17,6 +17,8 @@ public class PlayerHandler : MonoBehaviour {
 	public GUIStyle namePlate;
 	public bool keepMomentum = false;
 	public GameObject cpPF;
+	public GameObject camPF;
+	public float elasticity = 5f;
 
 	// Private
 	//Vector3 currSubPosition;
@@ -128,7 +130,7 @@ public class PlayerHandler : MonoBehaviour {
 	public void AddXVelocity (float delta, float max) {
 		Vector3 rv = rigidbody.velocity;
 		rv.x += delta;
-		if (Mathf.Abs (rv.x) > max) {
+		if (max != 0 && Mathf.Abs (rv.x) > max) {
 			rv.x = rv.x >= 0 ? max : -max;
 		}
 		SetVelocity (rv.x, rv.y, rv.z);
@@ -137,7 +139,7 @@ public class PlayerHandler : MonoBehaviour {
 	public void AddYVelocity (float delta, float max) {
 		Vector3 rv = rigidbody.velocity;
 		rv.y += delta;
-		if (Mathf.Abs (rv.y) > max) {
+		if (max != 0 && Mathf.Abs (rv.y) > max) {
 			rv.y = rv.y >= 0 ? max : -max;
 		}
 		SetVelocity (rv.x, rv.y, rv.z);
@@ -146,7 +148,7 @@ public class PlayerHandler : MonoBehaviour {
 	public void AddZVelocity (float delta, float max) {
 		Vector3 rv = rigidbody.velocity;
 		rv.z += delta;
-		if (Mathf.Abs (rv.z) > max) {
+		if (max != 0 && Mathf.Abs (rv.z) > max) {
 			rv.z = rv.z >= 0 ? max : -max;
 		}
 		SetVelocity (rv.x, rv.y, rv.z);
@@ -163,7 +165,7 @@ public class PlayerHandler : MonoBehaviour {
 				localName = GUI.TextField(new Rect(10, 10, 100, 20), localName, 30);
 				networkView.RPC ("ChangePlayerTag", RPCMode.OthersBuffered, localName);
 			}
-			namePlatePos = Camera.main.WorldToScreenPoint (gameObject.transform.position);
+			namePlatePos = Camera.main.WorldToScreenPoint (transform.position);
 			GUI.Label (new Rect(namePlatePos.x - 100, Screen.height - namePlatePos.y + 10, 200, 50), localName, namePlate);
 		}
 	}
@@ -222,17 +224,18 @@ public class PlayerHandler : MonoBehaviour {
 	// MonoBehaviour
 	public void OnNetworkInstantiate (NetworkMessageInfo info) {
 		if (networkView.isMine) {
-			Camera cam = Camera.main;
-			CameraHandler ch = (CameraHandler)cam.GetComponent("CameraHandler");
-			ch.target = transform;
+			Camera.main.enabled = false;
+			Object ncam = Network.Instantiate(camPF, transform.position, transform.rotation, 0);
+			GameObject cam = (GameObject)ncam;
+			CameraHandler ch = (CameraHandler)cam.GetComponent<CameraHandler> ();
+			ch.target = transform;	
 			Object checkpoint = Network.Instantiate(cpPF, transform.position, transform.rotation, 0);
 			GameObject tempg = (GameObject) checkpoint;
-			CheckpointHandler cph = (CheckpointHandler)tempg.GetComponent("CheckpointHandler");
+			CheckpointHandler cph = (CheckpointHandler)tempg.GetComponent<CheckpointHandler> ();
 			cph.target = transform;
 			foreach (GameObject fadeObj in GameObject.FindGameObjectsWithTag("Fade")) {
-				((FadeObject)fadeObj.GetComponent("FadeObject")).target = transform;
-			}
-			
+				((FadeObject)fadeObj.GetComponent<FadeObject> ()).target = transform;
+			}		
 		}
 	}
 	
@@ -241,6 +244,32 @@ public class PlayerHandler : MonoBehaviour {
 		localName = tag;
 	}
 }
+
+//\\ POWAHS (states?) //\\
+/*
+	| id |  r, g, b | (color) name : description
+	|  0 |  0, 0, 0 | (black) regular : no effects
+	|| Primaries
+	|  1 |  1, 0, 0 | (red) recolo : time control or slow-mo key
+	|  2 |  0, 1, 0 | (green) gloria : enhanced light in vicinity
+	|  3 |  0, 0, 1 | (dark blue) bovis : double jump
+	|| Secondaries
+	|  4 |  0, 1, 1 | (cyan) brevis : miniature
+	|  5 |  1, 0, 1 | (magenta) //perspicuus : personal light
+	|  6 |  1, 1, 0 | (yellow) yede : speed and acceleration increase (not jump)
+	|| Tertiaries
+	|  7 |  1,.5, 0 | (orange) oblittero : either remove gravity or destroy certain walls
+	|  8 |  1,.5, 1 | (pink) pando : duplicate
+	|  9 | .5, 0, 1 | (violet)
+	
+	| 10 |  1, 1, 1 | (white) ultra : combination of primaries (rgb)
+	
+	Secondaries do not spawn naturally, and must be created by addition of two primaries.
+	If two primaries are present and a third is collected, it will be paired with the latest primary.
+	If the third primary is identical to one already present, both will be removed.
+	
+	Rares can only 
+*/
 
 public class PowerUp {
 
@@ -255,61 +284,5 @@ public class PowerUp {
 		color = c;
 		gameObject.renderer.material.SetVector ("_RimColor", color);
 		gameObject.GetComponent<ParticleSystem> ().renderer.material.SetVector ("_RimColor", color);
-	}
-}
-
-public class PlayerNetworker {
-
-	float lastSyncTime = 0;
-	float syncDelay = 0;
-	float syncTime = 0;
-	Vector3 syncStartPos = Vector3.zero;
-	Vector3 syncEndPos = Vector3.zero;
-	NetworkView nv;
-	
-	public PlayerNetworker (NetworkView networkView) {
-		nv = networkView;
-	}
-
-	public Rigidbody SyncMovement (Rigidbody rigidbody) {
-		syncTime += Time.deltaTime;
-		rigidbody.position = Vector3.Lerp(syncStartPos, syncEndPos, syncTime / syncDelay);
-		return rigidbody;
-	}
-	
-	public void OSNV (BitStream stream, NetworkMessageInfo info, Rigidbody rigidbody) {
-		
-		Vector3 syncPosition = Vector3.zero;
-		Vector3 syncVelocity = Vector3.zero;
-		if (stream.isWriting) {
-			syncPosition = rigidbody.position;
-			stream.Serialize(ref syncPosition);
-			
-			syncVelocity = rigidbody.velocity;
-			stream.Serialize(ref syncVelocity);
-		} else {
-			
-			stream.Serialize(ref syncPosition);
-			stream.Serialize(ref syncVelocity);
-			
-			syncTime = 0;
-			syncDelay = Time.time - lastSyncTime;
-			lastSyncTime = Time.time;
-			
-			syncEndPos = syncPosition + syncVelocity * syncDelay;
-			syncStartPos = rigidbody.position;
-		}
-	}
-	
-	public void ONI (NetworkMessageInfo info, Transform transform) {
-		if (nv.isMine) {
-			Camera cam = Camera.main;
-			CameraHandler ch = (CameraHandler)cam.GetComponent("CameraHandler");
-			ch.target = transform;
-			foreach (GameObject fadeObj in GameObject.FindGameObjectsWithTag("Fade")) {
-				((FadeObject)fadeObj.GetComponent("FadeObject")).target = transform;
-			}
-			
-		}
 	}
 }

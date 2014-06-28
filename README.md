@@ -13,6 +13,20 @@ Please report any bugs to the [Github Issue tracker](https://github.com/Toofifty
 Changelog
 ---------
 
+#####v0.1.5a
+
+* Working on new GUI, ~70% implemented
+* New GameManager to organize things
+* It's actually possible to quit the game now
+* Get kicked to the main menu when you disconnect from a server
+
+#####v0.1.4a
+
+* Rewrote player shader, no transparent
+* Tweaked player particle effects
+* Rewrote game in C#
+* Slight GUI tweak
+
 #####v0.1.3a
 
 * Created a glow shader to indicate power up

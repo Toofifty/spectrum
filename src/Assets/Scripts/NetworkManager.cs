@@ -5,10 +5,10 @@ using System.Collections.Generic;
 public class NetworkManager : MonoBehaviour {
 
 	string typeName = "SpectrumMP";
-	string gameName = "Untitled";
 	string joinIP = "localhost";
-	HostData[] hostList = {};
+	public HostData[] hostList = {};
 	List<string> chatList = new List<string> ();
+	GameManager gameManager;
 	
 	public string displayName = "";
 	public GameObject playerPF;
@@ -24,6 +24,7 @@ public class NetworkManager : MonoBehaviour {
 		MasterServer.port = 23466;
 		Network.natFacilitatorIP = "121.214.63.194";
 		Network.natFacilitatorPort = 23466;
+		gameManager = (GameManager)GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameManager> ();
 	}
 
 	Object SpawnPlayer () {
@@ -31,9 +32,16 @@ public class NetworkManager : MonoBehaviour {
 									Quaternion.identity, 0);
 	}
 	
-	void StartServer () {
+	public void StartServer (string gameName) {
 		Network.InitializeServer (4, hostPort, !Network.HavePublicAddress ());
 		MasterServer.RegisterHost (typeName, gameName);
+	}
+	
+	public void StartPrivate () {
+	}
+	
+	public void ConnectTo (string address, int port) {
+		Network.Connect (address, port);
 	}
 	
 	// MonoBehaviour
@@ -45,36 +53,7 @@ public class NetworkManager : MonoBehaviour {
 	// MonoBehaviour
 	void OnGUI () {
 		if (showUI) {
-			if (!Network.isClient && !Network.isServer) {
-				gameName = GUI.TextField (new Rect (210, 110, 100, 20), gameName, 20);
-				joinIP = GUI.TextField (new Rect (210, 140, 100, 20), joinIP, 20);
-				
-				if (GUI.Button (new Rect (110, 110, 100, 20), "Open Server")) {
-					SendGameMessage ("Creating server '" + gameName + "'...");
-					StartServer ();
-				}
-				
-				if (GUI.Button (new Rect (110, 170, 200, 20), "Refresh Hosts")) {
-					SendGameMessage ("Refreshing hosts...");
-					RefreshHostList ();
-				}
-				
-				if (GUI.Button (new Rect(110, 140, 100, 20), "Join IP")) {
-					SendGameMessage ("Joining IP " + joinIP + "...");
-					Network.Connect (joinIP, hostPort);
-				}
-				
-				if (hostList.Length >= 0) {
-					for (int i = 0; i < hostList.Length; i++) {
-						if (GUI.Button (new Rect (110, 200 + (30 * i), 200, 20), 
-										hostList[i].gameName + " | " + hostList[i].connectedPlayers 
-										+ "/" + Network.maxConnections)) {
-							SendGameMessage ("Joining host " + hostList[i].gameName + "...");
-							JoinServer (hostList[i]);
-						}
-					}
-				}
-			} else if (Network.isServer) {
+			if (Network.isServer) {
 				if (GUI.Button (new Rect (10, 55, 100, 20), "Close server")) {
 					Network.Disconnect ();
 				}
@@ -100,7 +79,7 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 	
-	void RefreshHostList () {
+	public void RefreshHostList () {
 		MasterServer.RequestHostList (typeName);
 	}
 	
@@ -111,7 +90,7 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 	
-	void JoinServer (HostData hostData) {
+	public void JoinServer (HostData hostData) {
 		Network.Connect (hostData);
 	}
 	
@@ -143,12 +122,15 @@ public class NetworkManager : MonoBehaviour {
 				SendGameMessage ("Disconnected from the server.");
 			}
 		}
+		gameManager.RestartGame ();
 	}
 	
 	// MonoBehaviour
 	void OnFailedToConnect (NetworkConnectionError error) {
 		SendGameMessage ("Could not connect to server.");
 		SendGameMessage (error.ToString ());
+		gameManager.ChangeObjectLight ("JoinIPButton", new Color (1.0f, 0.5f, 0.5f, 1.0f));
+		
 	}
 	
 	string NumberPlayers (bool add) {
@@ -156,7 +138,7 @@ public class NetworkManager : MonoBehaviour {
 		return (Network.connections.Length + plusOne) + "/" + Network.maxConnections;
 	}
 	
-	void SendGameMessage (string message) {
+	public void SendGameMessage (string message) {
 		chatList.Add (message);
 		Debug.Log (FormatTime (Time.time) + " " + message);
 		if (chatList.Count > 6) {
